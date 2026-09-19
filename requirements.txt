@@ -1,0 +1,20 @@
+# Screen Capture & Image Processing
+mss>=9.0.1
+Pillow>=10.0.0
+opencv-python>=4.8.0
+numpy>=1.24.0
+
+# OCR Engines (Choose one or more)
+easyocr>=1.7.0
+pytesseract>=0.3.10
+
+# Translation
+deep-translator>=1.11.4
+google-generativeai>=0.8.0
+
+# GUI & Overlay
+PyQt6>=6.6.0
+
+# Utilities & Hotkeys
+keyboard>=0.13.5
+python-dotenv>=1.0.0
