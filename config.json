@@ -1,0 +1,52 @@
+{
+    "roi": {
+        "left": 28,
+        "top": 180,
+        "width": 1028,
+        "height": 601
+    },
+    "overlay": {
+        "x": 236,
+        "y": 703,
+        "width": 1040,
+        "height": 113,
+        "font_size": 22,
+        "font_color": "#FFFFFF",
+        "bg_color": "#000000",
+        "bg_opacity": 0.35,
+        "show_original": false,
+        "click_through": false,
+        "show_roi_border": false
+    },
+    "translation": {
+        "engine": "google",
+        "source_lang": "en",
+        "target_lang": "th",
+        "gemini_api_key": "",
+        "gemini_model": "gemini-3.6-flash"
+    },
+    "ocr": {
+        "engine": "winocr",
+        "lang": "en",
+        "upscale_factor": 1.5,
+        "contrast_enhance": true,
+        "binarize": true
+    },
+    "app": {
+        "preset": "game",
+        "interval_ms": 500,
+        "similarity_threshold": 0.85,
+        "hotkeys": {
+            "snapshot_translate": "f7",
+            "toggle_translation": "f8",
+            "select_roi": "f9",
+            "toggle_lock": "f10"
+        },
+        "is_fullscreen": true,
+        "capture_mode": "audio_only"
+    },
+    "audio": {
+        "enabled": true,
+        "mode": "loopback"
+    }
+}

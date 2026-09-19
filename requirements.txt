@@ -1,20 +1,28 @@
 # Screen Capture & Image Processing
-mss>=9.0.1
-Pillow>=10.0.0
+mss>=10.2.0
+Pillow>=12.0.0
 opencv-python>=4.8.0
 numpy>=1.24.0
 
-# OCR Engines (Choose one or more)
-easyocr>=1.7.0
+# Windows Native OCR & Tesseract
+winocr>=0.0.15
 pytesseract>=0.3.10
 
-# Translation
+# Audio Capture & Speech-to-Text (STT)
+faster-whisper>=1.2.0
+pyaudiowpatch>=0.2.12
+SpeechRecognition>=3.17.0
+sounddevice>=0.5.6
+soundfile>=0.14.0
+
+# Multi-Provider Translation Engines (Auto-Failover)
+translatepy>=2.3
 deep-translator>=1.11.4
-google-generativeai>=0.8.0
+google-genai>=2.24.0
 
 # GUI & Overlay
-PyQt6>=6.6.0
+PyQt6>=6.11.0
 
-# Utilities & Hotkeys
+# Hotkeys & Environment
 keyboard>=0.13.5
-python-dotenv>=1.0.0
+python-dotenv>=1.2.0
