@@ -41,6 +41,9 @@ def setup_cuda_dlls():
     import site
     dirs_to_check = []
     base_dir = os.path.dirname(os.path.abspath(__file__))
+    if getattr(sys, "frozen", False):
+        exe_dir = os.path.dirname(sys.executable)
+        dirs_to_check.extend([exe_dir, getattr(sys, "_MEIPASS", exe_dir)])
     venv_site = os.path.join(base_dir, ".venv", "Lib", "site-packages")
     if os.path.isdir(venv_site):
         dirs_to_check.append(venv_site)
@@ -52,6 +55,17 @@ def setup_cuda_dlls():
             dirs_to_check.append(user_site)
 
     for sp in dirs_to_check:
+        if not os.path.isdir(sp):
+            continue
+        with contextlib.suppress(Exception):
+            for f in os.listdir(sp):
+                if f.endswith(".dll") and ("cublas" in f or "cudnn" in f):
+                    with contextlib.suppress(Exception):
+                        os.add_dll_directory(sp)
+                    if sp not in os.environ.get("PATH", ""):
+                        os.environ["PATH"] = sp + os.pathsep + os.environ.get("PATH", "")
+                    break
+
         nvidia_root = os.path.join(sp, "nvidia")
         if os.path.isdir(nvidia_root):
             for root, dirs, files in os.walk(nvidia_root):
@@ -108,7 +122,15 @@ def load_config():
         from dotenv import load_dotenv
         load_dotenv()
 
-    for p in ["config.json", os.path.join(os.path.dirname(__file__), "config.json")]:
+    candidates = ["config.json"]
+    if getattr(sys, "frozen", False):
+        exe_dir = os.path.dirname(sys.executable)
+        candidates.append(os.path.join(exe_dir, "config.json"))
+        if hasattr(sys, "_MEIPASS"):
+            candidates.append(os.path.join(sys._MEIPASS, "config.json"))
+    candidates.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json"))
+
+    for p in candidates:
         if os.path.exists(p):
             try:
                 with open(p, "r", encoding="utf-8") as f:

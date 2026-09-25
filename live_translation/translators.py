@@ -29,10 +29,15 @@ class GlossaryManager:
     def __init__(self, glossary_path: Optional[str] = None):
         if glossary_path is None:
             candidates = [
-                os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "glossary.json"),
-                os.path.join(os.getcwd(), "glossary.json"),
                 "glossary.json",
+                os.path.join(os.getcwd(), "glossary.json"),
             ]
+            if getattr(sys, "frozen", False):
+                exe_dir = os.path.dirname(sys.executable)
+                candidates.append(os.path.join(exe_dir, "glossary.json"))
+                if hasattr(sys, "_MEIPASS"):
+                    candidates.append(os.path.join(sys._MEIPASS, "glossary.json"))
+            candidates.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "glossary.json"))
             for p in candidates:
                 if os.path.exists(p):
                     glossary_path = p

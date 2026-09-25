@@ -34,3 +34,8 @@ temp/
 captures/
 debug_*.png
 test_*.png
+
+# Packaging & Build
+build/
+dist/
+*.zip
