@@ -1,28 +1,18 @@
-# Screen Capture & Image Processing
-mss>=10.2.0
-Pillow>=12.0.0
-opencv-python>=4.8.0
-numpy>=1.24.0
-
-# Windows Native OCR & Tesseract
-winocr>=0.0.15
-pytesseract>=0.3.10
-
 # Audio Capture & Speech-to-Text (STT)
 faster-whisper>=1.2.0
 pyaudiowpatch>=0.2.12
-SpeechRecognition>=3.17.0
 sounddevice>=0.5.6
-soundfile>=0.14.0
+numpy>=1.24.0
 
-# Multi-Provider Translation Engines (Auto-Failover)
+# Multi-Provider Translation Engines & High-Speed API
+requests>=2.31.0
+google-genai>=2.24.0
 translatepy>=2.3
 deep-translator>=1.11.4
-google-genai>=2.24.0
 
-# GUI & Overlay
-PyQt6>=6.11.0
-
-# Hotkeys & Environment
-keyboard>=0.13.5
+# Environment & Helpers
 python-dotenv>=1.2.0
+
+# NVIDIA GPU Acceleration (CUDA & cuDNN)
+nvidia-cublas-cu12>=12.1.0
+nvidia-cudnn-cu12>=9.0.0

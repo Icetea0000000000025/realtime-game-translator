@@ -92,24 +92,16 @@
 
 ```text
 realtime-game-translator/
-├── src/                               # โมดูลหลักสำหรับ PyQt6 Desktop App
-│   ├── audio_listener.py              # ถอดความและแปลเสียงระบบ (WASAPI Loopback & Gemini)
-│   ├── capture.py                     # ระบบจับภาพหน้าจอด้วย mss ความเร็วสูง
-│   ├── controller.py                  # Background Worker ควบคุมวงรอบ OCR & Translation
-│   ├── ocr.py                         # OCR Engine (Windows Native OCR & Tesseract)
-│   ├── overlay.py                     # หน้าต่างซับไตเติลโปร่งแสง & ROI Selector
-│   ├── translator.py                  # ระบบแปลภาษาหลัก (Gemini, Google Translate, Cache)
-│   ├── ui_panel.py                    # แผงตั้งค่าและแผงควบคุมหลัก (Modern Dark UI)
-│   └── utils.py                       # Image processing, ConfigManager, Text cleaning
-├── live_translation/                  # โมดูลเสริมสำหรับ Live Audio Whisper Pipeline
+├── live_translation/                  # โมดูลระบบถอดเสียงและแปลภาษาแบบสด (Self-contained)
 │   ├── sessions.py                    # จัดการเซสชันการถอดเสียงและข้อความ
 │   ├── text_pipeline.py               # จัดการข้อความซ้ำ, เติมเครื่องหมาย, ตัดคำหลอน
-│   └── translators.py                 # Multi-backend translators (Gemini, Ollama, Fallback)
-├── config.json                        # ไฟล์คอนฟิกหลักของระบบ (ปรับแต่งหรือเซฟผ่าน GUI)
-├── live_translate_windows.py          # แอปสตรีมมิ่งถอดเสียงและแปลแบบสด (Standalone CLI/HUD)
-├── main.py                            # จุดเริ่มต้นหลักของโปรแกรม (Full GUI Control Panel)
-├── requirements.txt                   # รายการไลบรารี Python ทั้งหมด
-└── run_windows.bat                    # สคริปต์คลิกเดียวเพื่อสร้าง venv, ติดตั้ง และรันโปรแกรม
+│   └── translators.py                 # Multi-backend translators (Fast Google, Glossary, Gemini, Ollama)
+├── glossary.json                      # พจนานุกรมคำศัพท์และชื่อเฉพาะในเกม
+├── config.json                        # ไฟล์คอนฟิกหลักของระบบ
+├── live_translate_windows.py          # แอปสตรีมมิ่งถอดเสียงและแปลสดบน Windows (Floating HUD)
+├── main.py                            # จุดเริ่มต้นหลัก (เรียกใช้งาน live_translate_windows.py)
+├── requirements.txt                   # รายการไลบรารี Python ที่จำเป็น
+└── run_windows.bat                    # สคริปต์คลิกเดียวเพื่อรันโปรแกรมทันที
 ```
 
 ---
@@ -313,7 +305,8 @@ python live_translate_windows.py --mode mic --whisper small --target th
 - [x] หน้าต่างซับไตเติลโปร่งแสงแบบ Click-Through ไม่กวนการเล่นเกม
 - [x] คีย์ลัดระดับสากล (Global Hotkeys)
 - [ ] ระบบสร้างตัวติดตั้ง Standalone Executable (.exe) ผ่าน PyInstaller
-- [ ] ระบบจัดการคำศัพท์เฉพาะทางในเกม (Gaming Glossary / Custom Dictionary)
+- [x] ระบบจัดการคำศัพท์เฉพาะทางในเกม (Gaming Glossary / Custom Dictionary: glossary.json)
+- [x] ระบบ Auto-Hide Subtitles และ Dynamic Silence Cut สำหรับตัดเสียงพูดฉับไว
 
 ---
 
