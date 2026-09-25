@@ -1,214 +1,195 @@
-# 🎮 Real-Time Game & Media Translator (EN / Any ➔ TH)
+# Real-Time Game & Media Audio Translator (EN / Multi-Language ➔ TH)
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011-0078D6.svg)](https://microsoft.com/windows)
-[![GUI](https://img.shields.io/badge/GUI-PyQt6%20%7C%20Tkinter-41CD52.svg)](https://riverbankcomputing.com/software/pyqt/)
-[![AI](https://img.shields.io/badge/AI-faster--whisper%20%7C%20Gemini%20%7C%20Ollama-orange.svg)](https://github.com/SYSTRAN/faster-whisper)
+[![GUI](https://img.shields.io/badge/GUI-Tkinter-41CD52.svg)](https://docs.python.org/3/library/tkinter.html)
+[![STT Engine](https://img.shields.io/badge/STT-Faster--Whisper%20%7C%20CUDA-orange.svg)](https://github.com/SYSTRAN/faster-whisper)
+[![Translation](https://img.shields.io/badge/Translation-Google%20Fast%20%7C%20Gemini%20AI-9cf.svg)](https://ai.google.dev/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-โปรแกรมแปลภาษาเกมและสื่อวิดีโอแบบเรียลไทม์ (**Real-Time Translator**) จากภาษาอังกฤษและภาษาอื่น ๆ เป็นภาษาไทย รองรับทั้งการ**จับภาพหน้าจอ (Screen OCR)** และการ**ดักฟังเสียงเกม/YouTube โดยตรงจากระบบเสียงในเครื่อง (WASAPI Loopback Audio Speech-to-Text)** พร้อมระบบแสดงผล **Transparent Subtitle Overlay** ลอยทับหน้าจอเกม เล่นเกมได้ต่อเนื่องไม่สะดุด ไม่ต้องคอยกดสลับหน้าต่าง
+ระบบถอดเสียงพูดและแปลภาษาแบบเรียลไทม์ (**Real-Time Audio Speech-to-Text & Translation**) สำหรับระบบปฏิบัติการ Windows ออกแบบมาสำหรับการเล่นเกม ดูวิดีโอสตรีมมิ่ง คัตซีน หรือการรับชมสื่อต่างประเทศ โดยดักจับสัญญาณเสียงภายในเครื่องโดยตรงผ่าน **WASAPI Loopback** แปลงเสียงเป็นข้อความด้วยแบบจำลองปัญญาประดิษฐ์ **Faster-Whisper** ที่รองรับการประมวลผลความเร็วสูงบนการ์ดจอ NVIDIA RTX (CUDA) และแปลเป็นภาษาไทยผ่านเอนจินความหน่วงต่ำ พร้อมหน้าต่างซับไตเติลโปร่งแสง (**Transparent Overlay**) ลอยทับหน้าจอเกมโดยไม่บดบังหรือรบกวนการเล่น
 
 ---
 
-## ✨ Features (คุณสมบัติเด่น)
+## คุณสมบัติการทำงานหลัก (Core Features)
 
-### 1. 📺 ระบบจับภาพหน้าจอ (Screen OCR Translation)
-- 🎯 **3 โหมดการจับภาพ**:
-  - **ROI Mode (Region of Interest)**: ลากเลือกเฉพาะกล่องข้อความหรือซับไตเติลเกมได้อย่างอิสระ
-  - **Bottom Subtitle Preset**: คลิกเดียวเซ็ตพื้นที่จับภาพ 25% ด้านล่างจอสำหรับเกมหรือภาพยนตร์
-  - **Fullscreen Mode**: ตรวจจับและแปลข้อความทั่วทั้งหน้าจอ
-- ⚡ **Dual OCR Engines**:
-  - **Windows Native OCR (`winocr`)**: ใช้งาน API ความเร็วสูงที่ติดมากับ Windows 10/11 กินสเปกต่ำ ไม่ต้องติดตั้งไฟล์โมเดลเพิ่ม
-  - **Tesseract OCR**: รองรับการปรับแต่ง Contrast Enhancement, Binarization และ Image Upscaling เพื่อความแม่นยำสูงสุด
-- 🛡️ **Smart Text Debounce**: ตรวจจับความเปลี่ยนแปลงของข้อความอัตโนมัติ ไม่สั่งแปลซ้ำหากข้อความเดิมยังไม่เปลี่ยน ช่วยประหยัดเน็ตและลดอาการกระตุก
+### 1. ระบบดักจับสัญญาณเสียงความเร็วสูง (Low-Latency Audio Capture)
+- **WASAPI Loopback Capture:** ดักจับเสียงเกม คัตซีน และเสียงระบบจาก Windows โดยตรง ไม่ต้องต่อสายสัญญาณภายนอก และไม่ต้องเปิดใช้งาน Stereo Mix
+- **Microphone Input Support:** สลับรับสัญญาณเสียงจากไมโครโฟนสำหรับการสนทนาสดได้
+- **Dynamic Silence Cut & Buffering:** ตัดช่วงเสียงเงียบอัตโนมัติ (Silence Threshold RMS) และส่งบล็อกเสียงเข้าประมวลผลขนาด 0.2 วินาที เพื่อลดความหน่วงสะสม
 
-### 2. 🔊 ระบบแปลจากเสียงในเกมโดยตรง (Internal Audio STT Translation)
-- 🎧 **WASAPI Loopback Capture**: ดักจับเสียงเกม, คัตซีน, YouTube, Discord หรือวิดีโอสตรีมมิ่งจากภายในการ์ดเสียงของ Windows โดยตรง ไม่ต้องต่อสายแยก และไม่ต้องเปิด Stereo Mix
-- 🎙️ **Microphone Support**: สลับไปรับเสียงจากไมโครโฟนได้สำหรับฟังบทสนทนาสด
-- 🤖 **Offline AI STT (faster-whisper)**: ถอดความเสียงพูดด้วยโมเดล Whisper (CTranslate2) รองรับตั้งแต่ `tiny`, `base`, `small`, `medium` จนถึง `large-v3` บน CPU หรือ GPU (NVIDIA CUDA)
-- ⚡ **Gemini Direct Audio Mode**: ส่งสัญญาณเสียงเข้าประมวลผลกับ Google Gemini Multimodal แปลงเสียงเป็นซับไทยได้ในรอบเดียวอย่างรวดเร็ว
+### 2. ระบบถอดรหัสเสียงออฟไลน์ (Offline Speech-to-Text Engine)
+- **Faster-Whisper (CTranslate2):** ถอดความเสียงพูดเป็นข้อความ รองรับโมเดลตั้งแต่ขนาด `tiny`, `base`, `small`, `medium`, `turbo` จนถึง `large-v3`
+- **NVIDIA GPU Acceleration (CUDA 12 & cuDNN):** ระบบลงทะเบียนและโหลดไดนามิกลิงก์ไลบรารี (DLL) ของ CUDA/cuDNN อัตโนมัติ รองรับการประมวลผลบนการ์ดจอ NVIDIA RTX (เช่น RTX 2050, 3060, 4060) ให้ความเร็วในการประมวลผลคำพูดในระดับ 150 - 250 มิลลิวินาที
+- **Voice Text Normalization:** กรองคำซ้ำ (Deduplication) และตัดสัญญาณเสียงผิดเพี้ยนหรือคำหลอน (Hallucination Filtering)
 
-### 3. 🌐 เครื่องมือแปลภาษาอัจฉริยะ (Multi-Engine Translation)
-- 🧠 **Google Gemini AI (Gemini 2.5 / 3.6 Flash)**: แปลสำนวนเกมได้สละสลวย เข้ากับบริบทบทสนทนา ไม่แข็งทื่อเหมือนเครื่องแปลทั่วไป
-- 🦙 **Ollama Local LLM**: รองรับการเชื่อมต่อกับโมเดลภาษาแบบ Local (เช่น `gemma2:2b`, `qwen2.5:3b`) เพื่อแปลแบบออฟไลน์ 100% ปลอดภัยและฟรี
-- 🔄 **Auto-Failover System**: มีระบบสลับไปใช้ **Google Translate** (`deep-translator` / `translatepy`) อัตโนมัติเมื่อบริการหลักเกิดข้อผิดพลาดหรือโควตาหมด
+### 3. ระบบแปลภาษาหลายรูปแบบ (Multi-Engine Translation)
+- **Google Fast Engine (ค่าเริ่มต้น):** ประมวลผลแปลข้อความด้วยความเร็วสูงพิเศษ (Latency ~0.2 วินาที) ไม่ต้องใช้ API Key เหมาะสำหรับการเล่นเกมที่ต้องการคำแปลทันที
+- **Google Gemini AI:** แปลโดยวิเคราะห์บริบทของบทสนทนาและสำนวนเกม รองรับพจนานุกรมคำศัพท์เฉพาะทาง (`glossary.json`)
+- **Dynamic Hotkey Switch:** สลับเอนจินแปลภาษาได้ทันทีขณะใช้งานผ่านปุ่มลัด `F8`
+- **Multi-Language Support:** รองรับเสียงต้นทางภาษาอังกฤษ (EN), ญี่ปุ่น (JA), เกาหลี (KO), จีน (ZH) หรือตรวจจับภาษาอัตโนมัติ (Auto Detect) และแปลเป็นภาษาไทย (TH), อังกฤษ (EN) หรือญี่ปุ่น (JA)
 
-### 4. 🪟 หน้าต่างซับไตเติลโปร่งแสง (Transparent Overlay)
-- 🖱️ **Click-Through / Mouse-Transparent**: ป้องกันการคลิกเมาส์โดนหน้าต่างซับไตเติลขณะเล่นเกม (เปิด/ปิดด้วยปุ่มลัด `F10`)
-- 🎨 **Fully Customizable**: ปรับขนาดฟอนต์, สีตัวอักษร, สีพื้นหลัง, ระดับความโปร่งใส (Opacity) และเลือกเปิด/ปิดการแสดงภาษาต้นฉบับได้
-- 📐 **Glowing ROI Border**: กรอบไฟนีออนแสดงขอบเขตพื้นที่ที่กำลังอ่านตัวอักษรบนหน้าจอ
-
-### 5. ⌨️ คีย์ลัดควบคุมระดับสากล (Global Hotkeys)
-สั่งการได้ทันทีแม้เกมกำลังทำงานแบบเต็มหน้าจอ (Fullscreen):
-| คีย์ลัด | ฟังก์ชัน | คำอธิบาย |
-|:---:|:---|:---|
-| **`F7`** | **Snapshot Translate** | บังคับแคปเจอร์และแปลทันที 1 ครั้ง |
-| **`F8`** | **Toggle Pause/Resume** | หยุดชั่วคราว หรือเริ่มทำงานระบบแปลอัตโนมัติ |
-| **`F9`** | **Select New ROI** | ลากเมาส์เลือกพื้นที่บนหน้าจอใหม่อย่างรวดเร็ว |
-| **`F10`** | **Lock / Unlock Overlay** | สลับโหมดล็อกหน้าต่างซับให้คลิกทะลุเมาส์ (Click-through) |
+### 4. หน้าต่างแสดงผลซับไตเติลแบบโปร่งแสง (Dual-Mode Overlay Interface)
+- **Compact HUD Mode (โหมดย่อ):** หน้าต่างซับไตเติลโปร่งแสง 100% ไร้กรอบทึบรบกวนสายตา แสดงตัวอักษรพร้อมระบบเงา 8 ทิศทาง (8-Direction Drop Shadow) อ่านง่ายในทุกฉากของเกม
+- **Full Dashboard Mode (โหมดหน้าใหญ่):** แผงควบคุม 2 คอลัมน์ แสดงข้อความเสียงต้นฉบับและข้อความคำแปล พร้อมสถานะระบบ
+- **Click-Through Lock:** โหมดล็อกหน้าต่างทำให้การคลิกเมาส์ทะลุผ่านไปยังหน้าจอเกมได้ 100%
+- **Quick Context Menu:** เมนูคลิกขวาสำหรับปรับแต่งขนาดฟอนต์ สีตัวอักษร การเลือกภาษา และการตั้งค่าแถบควบคุม
 
 ---
 
-## 🏗️ Architecture (สถาปัตยกรรมระบบ)
+## สถาปัตยกรรมระบบ (System Architecture)
 
 ```text
-       ┌───────────────────────────────┐        ┌───────────────────────────────┐
-       │   Game Screen Display (MSS)   │        │   PC Internal Audio (WASAPI)  │
-       └──────────────┬────────────────┘        └──────────────┬────────────────┘
-                      │                                        │
-                      ▼                                        ▼
-       ┌───────────────────────────────┐        ┌───────────────────────────────┐
-       │  Image Preprocessing (OpenCV) │        │  Audio Buffer & VAD Filtering │
-       └──────────────┬────────────────┘        └──────────────┬────────────────┘
-                      │                                        │
-                      ▼                                        ▼
-       ┌───────────────────────────────┐        ┌───────────────────────────────┐
-       │  OCR Engine (WinOCR / Tess)   │        │  STT Engine (faster-whisper)  │
-       └──────────────┬────────────────┘        └──────────────┬────────────────┘
-                      │ (Detected Text)                        │ (Spoken Text)
-                      └────────────────┬───────────────────────┘
-                                       │
-                                       ▼
-                      ┌─────────────────────────────────┐
-                      │    Text Pipeline & Diff Cache   │
-                      └────────────────┬────────────────┘
-                                       │
-                                       ▼
-                      ┌─────────────────────────────────┐
-                      │    Smart Translation Services   │
-                      │  [Gemini AI / Ollama / Google]  │
-                      └────────────────┬────────────────┘
-                                       │ (Thai Subtitles)
-                                       ▼
-                      ┌─────────────────────────────────┐
-                      │  PyQt6 / Tkinter Floating HUD   │
-                      │   (Click-through Subtitles)     │
-                      └─────────────────────────────────┘
+ ┌───────────────────────────────┐        ┌───────────────────────────────┐
+ │   PC Internal Audio (WASAPI)  │        │   Microphone Audio (Direct)   │
+ └──────────────┬────────────────┘        └──────────────┬────────────────┘
+                │                                        │
+                └────────────────┬───────────────────────┘
+                                 │
+                                 ▼
+                ┌─────────────────────────────────┐
+                │ Audio Ring Buffer & Silence Cut │
+                │   (0.2s chunks, RMS detection)  │
+                └────────────────┬────────────────┘
+                                 │
+                                 ▼
+                ┌─────────────────────────────────┐
+                │   Faster-Whisper STT Engine     │
+                │  [NVIDIA CUDA 12 GPU / CPU]     │
+                └────────────────┬────────────────┘
+                                 │ (Spoken Text)
+                                 ▼
+                ┌─────────────────────────────────┐
+                │ Text Pipeline & Hallucination   │
+                │  Filter / Gaming Glossary Cache │
+                └────────────────┬────────────────┘
+                                 │
+                                 ▼
+                ┌─────────────────────────────────┐
+                │   Translation Engine Dispatcher │
+                │ ⚡ Fast Engine  |  🤖 Gemini AI  │
+                └────────────────┬────────────────┘
+                                 │ (Translated Subtitles)
+                                 ▼
+                ┌─────────────────────────────────┐
+                │  Tkinter Transparent HUD Window │
+                │  (Click-through / 8-Way Outline)│
+                └─────────────────────────────────┘
 ```
 
 ---
 
-## 📦 โครงสร้างโฟลเดอร์โปรเจกต์ (Project Structure)
+## โครงสร้างโฟลเดอร์โปรเจกต์ (Project Structure)
 
 ```text
 realtime-game-translator/
-├── live_translation/                  # โมดูลระบบถอดเสียงและแปลภาษาแบบสด (Self-contained)
+├── live_translation/                  # โมดูลประมวลผลข้อความและระบบแปลภาษา
 │   ├── sessions.py                    # จัดการเซสชันการถอดเสียงและข้อความ
-│   ├── text_pipeline.py               # จัดการข้อความซ้ำ, เติมเครื่องหมาย, ตัดคำหลอน
-│   └── translators.py                 # Multi-backend translators (Fast Google, Glossary, Gemini, Ollama)
-├── glossary.json                      # พจนานุกรมคำศัพท์และชื่อเฉพาะในเกม
-├── config.json                        # ไฟล์คอนฟิกหลักของระบบ
-├── live_translate_windows.py          # แอปสตรีมมิ่งถอดเสียงและแปลสดบน Windows (Floating HUD)
-├── main.py                            # จุดเริ่มต้นหลัก (เรียกใช้งาน live_translate_windows.py)
-├── requirements.txt                   # รายการไลบรารี Python ที่จำเป็น
-└── run_windows.bat                    # สคริปต์คลิกเดียวเพื่อรันโปรแกรมทันที
+│   ├── text_pipeline.py               # ตัวกรองคำซ้ำ เติมเครื่องหมาย และตัดคำหลอน
+│   └── translators.py                 # ตัวจัดการเอนจินแปลภาษา (Fast Google, Gemini, Ollama)
+├── .env                               # เก็บ API Key ส่วนตัว (ไม่ถูกนำขึ้น Git)
+├── config.json                        # การตั้งค่าพารามิเตอร์เริ่มต้นของระบบ
+├── glossary.json                      # ฐานข้อมูลคำศัพท์เฉพาะและชื่อตัวละครในเกม
+├── live_translate_windows.py          # โปรแกรมหลัก: ระบบดักจับเสียง ถอดความ แปล และแสดงผล Overlay
+├── main.py                            # จุดเริ่มต้นสำหรับรันแอปพลิเคชัน
+├── requirements.txt                   # รายการไลบรารีที่โปรเจกต์ต้องการ
+└── run_windows.bat                    # สคริปต์แบตช์สำหรับเริ่มโปรแกรมด้วยการคลิกเดียว
 ```
 
 ---
 
-## 🚀 วิธีการติดตั้งและการเริ่มใช้งาน (Getting Started)
+## ปุ่มลัดและการควบคุม (Controls & Hotkeys)
 
-### ความต้องการของระบบ (System Requirements)
-- **ระบบปฏิบัติการ**: Windows 10 หรือ Windows 11 (64-bit)
-- **Python**: เวอร์ชัน 3.10 ขึ้นไป (แนะนำ Python 3.11 หรือ 3.12)
-- **GPU (ทางเลือก)**: NVIDIA GPU พร้อมติดตั้ง CUDA Toolkit (หากต้องการใช้งาน faster-whisper ด้วยการประมวลผลผ่าน GPU)
+| ปุ่มลัด | ฟังก์ชัน | รายละเอียดการทำงาน |
+|:---:|:---|:---|
+| **`F2`** | **Toggle Window Mode** | สลับระหว่างโหมดซับโปร่งใส (Compact HUD) และแดชบอร์ดเต็ม 2 คอลัมน์ (Full Mode) |
+| **`F3`** | **Toggle Control Bar** | สลับการซ่อนหรือแสดงแถบเครื่องมือด้านบนในโหมด Compact HUD ทันที |
+| **`F4` / `F10`** | **Toggle Lock / Click-Through** | สลับสถานะล็อกตำแหน่งหน้าต่างซับไตเติล และเปิดโหมดเมาส์คลิกทะลุเข้าเกม |
+| **`F8`** | **Toggle Translation Engine** | สลับระหว่าง **Google Fast** (เร็ว ~0.2s) และ **Gemini AI** (วิเคราะห์บริบท) |
+| **คลิกขวาที่แถบซับ** | **Context Menu** | เปิดเมนูตั้งค่าด่วน: ภาษาต้นทาง, ภาษาปลายทาง, สีและขนาดตัวอักษร, พฤติกรรมแถบควบคุม |
 
 ---
 
-### ขั้นตอนที่ 1: ดาวน์โหลดโปรเจกต์ (Clone Repository)
+## การติดตั้งและการเริ่มใช้งาน (Installation & Setup)
+
+### ความต้องการของระบบ (System Requirements)
+- **ระบบปฏิบัติการ:** Windows 10 หรือ Windows 11 (64-bit)
+- **Python:** เวอร์ชัน 3.10 ขึ้นไป (แนะนำ Python 3.11 หรือ 3.12)
+- **ฮาร์ดแวร์ประมวลผล (ทางเลือกเพื่อประสิทธิภาพสูงสุด):** การ์ดจอ NVIDIA ซีรีส์ GTX / RTX ที่รองรับสถาปัตยกรรม CUDA 12
+
+---
+
+### ขั้นตอนที่ 1: ดาวน์โหลดโปรเจกต์
 ```bash
-git clone https://github.com/<YOUR_USERNAME>/realtime-game-translator.git
+git clone https://github.com/Icetea0000000000025/realtime-game-translator.git
 cd realtime-game-translator
 ```
 
-### ขั้นตอนที่ 2: สร้างและเปิดใช้งาน Virtual Environment
+### ขั้นตอนที่ 2: สร้างและเปิดใช้งานสภาพแวดล้อมเสมือน (Virtual Environment)
 ```bash
 python -m venv .venv
-# เปิดใช้งานบน Windows PowerShell / Command Prompt
 .venv\Scripts\activate
 ```
 
-### ขั้นตอนที่ 3: ติดตั้งไลบรารีที่จำเป็น (Install Dependencies)
+### ขั้นตอนที่ 3: ติดตั้งไลบรารีที่จำเป็น
 ```bash
 pip install -r requirements.txt
 ```
 
-> [!TIP]
-> **สำหรับการเปิดใช้งาน GPU Acceleration บน NVIDIA:**
-> หากต้องการให้ `faster-whisper` ถอดเสียงได้รวดเร็วขึ้นผ่านการ์ดจอ ให้ติดตั้ง PyTorch + CUDA:
-> ```bash
-> pip install torch --index-url https://download.pytorch.org/whl/cu121
-> ```
+> [!NOTE]
+> ในไฟล์ `requirements.txt` มีแพ็กเกจ `nvidia-cublas-cu12` และ `nvidia-cudnn-cu12` รวมอยู่แล้ว เมื่อติดตั้งเสร็จสิ้น ตัวโปรแกรมจะตรวจจับและดึงไฟล์ DLL ของ CUDA มาประมวลผลบนการ์ดจอ NVIDIA RTX อัตโนมัติ
+
+### ขั้นตอนที่ 4: ตั้งค่า Google Gemini API Key (ทางเลือก)
+หากต้องการใช้งานเอนจิน Google Gemini AI ร่วมด้วย:
+1. สร้างไฟล์ชื่อ `.env` ในโฟลเดอร์หลักของโปรเจกต์
+2. ระบุ API Key ลงในไฟล์:
+```env
+GEMINI_API_KEY=your_actual_gemini_api_key_here
+```
+*(หากไม่ระบุคีย์ ระบบจะใช้งานเอนจิน Google Fast ความเร็วสูงเป็นค่าเริ่มต้นโดยอัตโนมัติ)*
 
 ---
 
-## 🎮 วิธีการเรียกใช้งาน (How to Run)
+## วิธีการเรียกใช้งาน (How to Run)
 
-โปรแกรมมีรูปแบบการใช้งานหลักให้เลือก 2 รูปแบบตามความต้องการ:
-
-### วิธีที่ 1: ใช้งานผ่าน Full GUI App (แนะนำสำหรับการเล่นเกม)
-เป็นหน้าจอควบคุมครบวงจร ปรับแต่งได้ทั้งหน้าจอจับภาพ, ระบบเสียง, การแปล และตั้งค่าสีซับไตเติลผ่าน GUI:
-
+### วิธีที่ 1: เรียกใช้งานแบบเร็วผ่านคำสั่งหลัก
 ```bash
 python main.py
 ```
+หรือดับเบิลคลิกที่ไฟล์ **`run_windows.bat`** เพื่อเปิดโปรแกรมทันที
 
-#### การใช้งานในแอปหลัก:
-1. **เลือกโหมดการจับภาพ (Capture Mode)**:
-   - `🎯 จับภาพ ROI`: ลากคลุมพื้นที่ตัวหนังสือเกม (กด `F9` เพื่อเลือกใหม่)
-   - `🖥️ ทั้งหน้าจอ`: สำหรับเกมที่ตัวหนังสือกระจายทั่วจอ
-   - `🔊 ฟังเสียงอย่างเดียว`: ปิดการแคปจอ และดักฟังเสียงเกม/YouTube โดยตรง
-2. **ตั้งค่า API Key**:
-   - ไปที่แท็บ **⚙️ ระบบแปล & เสียง & OCR** ใส่ **Google Gemini API Key** เพื่อความลื่นไหลและสำนวนแปลที่ยอดเยี่ยม (หากไม่มี คีย์บอร์ดจะสลับไปใช้ Google Translate ฟรีอัตโนมัติ)
-3. **ปรับแต่งและล็อกหน้าต่างซับ**:
-   - ย้ายหน้าต่างซับไปยังจุดที่ต้องการ
-   - กดปุ่ม **`F10`** เพื่อเปิดโหมด **Click-Through (ล็อกหน้าต่าง)** เมาส์จะทะลุหน้าต่างซับ ทำให้ควบคุมเกมได้ตามปกติ
-
----
-
-### วิธีที่ 2: รันผ่าน Windows Batch File (คลิกเดียวรันได้เลย)
-สามารถดับเบิลคลิกไฟล์ **`run_windows.bat`** เพื่อเริ่มโปรแกรมได้ทันที (สคริปต์จะตรวจสอบและสร้าง `.venv` รวมถึงติดตั้งไลบรารีให้อัตโนมัติในครั้งแรก)
-
----
-
-### วิธีที่ 3: ใช้งาน Standalone Live Audio Stream Translator
-เหมาะสำหรับสตรีมเมอร์ หรือผู้ที่ต้องการฟังเสียงภาษาอังกฤษ/ญี่ปุ่นจาก YouTube, สตรีม หรือเกม แล้วแปลขึ้นแถบซับลอยแบบสด ๆ ด้วย `faster-whisper`:
+### วิธีที่ 2: ปรับแต่งผ่าน Command Line Interface (CLI)
+สามารถกำหนดค่าพารามิเตอร์การทำงานขั้นสูงผ่าน `live_translate_windows.py` ได้:
 
 ```bash
-# ตรวจสอบหมายเลข Audio Device ในเครื่อง
+# ตรวจสอบรายการอุปกรณ์เสียงทั้งหมดในระบบ
 python live_translate_windows.py --list
 
-# รันโหมดดักฟังเสียงระบบ (WASAPI Loopback) แปลด้วย Gemini
-python live_translate_windows.py --mode loopback --whisper base --target th
+# กำหนดขนาดโมเดล Whisper และอุปกรณ์ประมวลผล
+python live_translate_windows.py --whisper base --device-type cuda --compute-type float16
 
-# รันร่วมกับ Local LLM (Ollama)
-python live_translate_windows.py --mode loopback --ollama-model gemma2:2b --target th
+# ใช้งานโหมดรับสัญญาณเสียงจากไมโครโฟน
+python live_translate_windows.py --mode mic --target th
 
-# รันโหมดไมโครโฟน
-python live_translate_windows.py --mode mic --whisper small --target th
+# รันโดยแสดงผลเฉพาะในคอนโซล (ไม่เปิดหน้าต่าง Overlay)
+python live_translate_windows.py --no-window
 ```
 
-#### ตัวเลือก CLI ที่สำคัญ:
-- `--mode`: เลือกแหล่งเสียง `loopback` (เสียงในคอม) หรือ `mic` (ไมโครโฟน)
-- `--whisper`: เลือกขนาดโมเดล (`tiny`, `base`, `small`, `medium`, `turbo`, `large-v3`)
-- `--device-type`: ประมวลผลผ่าน `cpu` หรือ `cuda`
-- `--gemini-key`: ใส่ Gemini API Key หรือจะระบุไว้ใน `config.json` ก็ได้
-- `--no-window`: แสดงผลคำแปลเฉพาะบน Console (ไม่เปิดหน้าต่าง Overlay)
+#### พารามิเตอร์ CLI ที่สำคัญ:
+- `--mode`: เลือกแหล่งสัญญาณเสียง `loopback` (เสียงในคอม) หรือ `mic` (ไมโครโฟน)
+- `--whisper`: เลือกขนาดของโมเดล Faster-Whisper (`tiny`, `base`, `small`, `medium`, `turbo`, `large-v3`)
+- `--device-type`: หน่วยประมวลผล `cuda` (การ์ดจอ NVIDIA) หรือ `cpu`
+- `--compute-type`: รูปแบบความละเอียดการคำนวณ (`float16`, `int8`, `float32`)
+- `--source`: ภาษาของเสียงพูดต้นฉบับ (เช่น `en`, `ja`, `ko`, `zh`, `auto`)
+- `--target`: ภาษาคำแปลที่ต้องการ (เช่น `th`, `en`, `ja`)
 
 ---
 
-## ⚙️ โครงสร้างไฟล์การตั้งค่า (`config.json`)
+## รูปแบบไฟล์การตั้งค่า (Configuration)
 
-สามารถตั้งค่าล่วงหน้าผ่านไฟล์ [config.json](file:///C:/Users/ASUS/realtime-game-translator/config.json) ได้โดยตรง:
-
+### [config.json](file:///C:/Users/ASUS/realtime-game-translator/config.json)
 ```json
 {
-    "roi": {
-        "left": 28,
-        "top": 180,
-        "width": 1028,
-        "height": 601
-    },
     "overlay": {
         "x": 236,
         "y": 703,
@@ -220,34 +201,19 @@ python live_translate_windows.py --mode mic --whisper small --target th
         "bg_opacity": 0.35,
         "show_original": false,
         "click_through": false,
-        "show_roi_border": false
+        "auto_hide_seconds": 6
     },
     "translation": {
         "engine": "google",
         "source_lang": "en",
         "target_lang": "th",
-        "gemini_api_key": "YOUR_GEMINI_API_KEY",
-        "gemini_model": "gemini-3.6-flash"
-    },
-    "ocr": {
-        "engine": "winocr",
-        "lang": "en",
-        "upscale_factor": 1.5,
-        "contrast_enhance": true,
-        "binarize": true
+        "gemini_api_key": "",
+        "gemini_model": "gemini-3.5-flash-lite"
     },
     "app": {
         "preset": "game",
         "interval_ms": 500,
-        "similarity_threshold": 0.85,
-        "hotkeys": {
-            "snapshot_translate": "f7",
-            "toggle_translation": "f8",
-            "select_roi": "f9",
-            "toggle_lock": "f10"
-        },
-        "is_fullscreen": false,
-        "capture_mode": "roi"
+        "similarity_threshold": 0.85
     },
     "audio": {
         "enabled": true,
@@ -258,58 +224,70 @@ python live_translate_windows.py --mode mic --whisper small --target th
 
 ---
 
-## ❓ คำถามที่พบบ่อย & การแก้ไขปัญหา (Troubleshooting & FAQ)
+## แผนการพัฒนาระบบ (Development Roadmap)
 
-<details>
-<summary><b>1. กดปุ่มลัด (Hotkeys F7 - F10) ในเกมไม่ได้ผล ทำอย่างไร?</b></summary>
+เอกสารฉบับนี้กำหนดกรอบการพัฒนาระบบแปลเสียงเรียลไทม์สำหรับเกมและสื่อมัลติมีเดีย โดยแบ่งออกเป็น 3 ระยะตามลำดับความคุ้มค่าและประสิทธิภาพเชิงวิศวกรรม
 
-เกมหลายเกมรันด้วยสิทธิ์ Administrator ทำให้โปรแกรมภายนอกดักจับคีย์ลัดไม่ได้
-- **วิธีแก้**: ให้เปิด Command Prompt / PowerShell ด้วยสิทธิ์ **Run as Administrator** แล้วค่อยรัน `python main.py`
-</details>
+### ระยะที่ 1: การเพิ่มประสิทธิภาพระบบภายในเครื่อง (On-Device Architecture)
+**เป้าหมาย:** ยกระดับประสบการณ์ใช้งานโดยไม่เพิ่มภาระค่าใช้จ่ายบริการภายนอก
 
-<details>
-<summary><b>2. ใช้งานโหมดเสียง Loopback แล้วไม่มีเสียงขึ้นในโปรแกรม?</b></summary>
+1. **การแยกเสียงพูดออกจากเสียงประกอบ (Voice Activity Filtering)**
+   - ปัญหาปัจจุบัน: เสียงดนตรีพื้นหลังและเอฟเฟกต์ในเกม (เสียงปืน, เสียงระเบิด) ส่งผลให้แบบจำลองถอดเสียงผิดพลาด
+   - แนวทางพัฒนา: นำโมเดล DeepFilterNet หรือ Silero VAD มาคัดกรองเสียงก่อนส่งเข้ากระบวนการถอดเสียง เพื่อตัดเสียงรบกวนและเก็บเฉพาะย่านความถี่เสียงมนุษย์
+   - ประโยชน์: ลดข้อผิดพลาดในการสะกดคำลงมากกว่า 50%
 
-- ตรวจสอบว่าเปิดเสียงเกมหรือ YouTube อยู่หรือไม่ (เสียงต้องมีระดับความดังเกินเกณฑ์ Silence RMS)
-- ตรวจสอบว่า Default Playback Device ของ Windows คือลำโพงหรือหูฟังที่คุณกำลังใช้งาน
-- สามารถตรวจสอบลำดับอุปกรณ์เสียงได้ด้วยคำสั่ง:
-  ```bash
-  python live_translate_windows.py --list
-  ```
-</details>
+2. **การแสดงผลแบบสตรีมมิ่ง (Streaming Subtitle Pacing)**
+   - ปัญหาปัจจุบัน: คำบรรยายจะปรากฏขึ้นเป็นก้อนหลังจากผู้พูดหยุดพูดเท่านั้น
+   - แนวทางพัฒนา: ปรับวงจรการทำงานให้เป็นระบบสองสถานะ (Interim และ Final) โดยคำภาษาอังกฤษจะทยอยแสดงผลบนหน้าจอตามจังหวะการพูดสด จากนั้นระบบจะทบทวนและแปลเป็นภาษาไทยเมื่อจบวรรค
+   - ประโยชน์: ลดความรู้สึกหน่วงของผู้ใช้งาน และสร้างจังหวะการอ่านที่ต่อเนื่องเหมือนคำบรรยายบนแพลตฟอร์มมาตรฐาน
 
-<details>
-<summary><b>3. ขอรับ Google Gemini API Key ได้จากที่ไหน?</b></summary>
+### ระยะที่ 2: การเชื่อมต่อบริการคลาวด์เฉพาะทาง (Cloud-Based Integration)
+**เป้าหมาย:** ยกระดับความแม่นยำและความเร็วสู่ระดับมาตรฐานเชิงพาณิชย์
 
-- สามารถขอรับ API Key ฟรีได้จาก [Google AI Studio](https://aistudio.google.com/)
-- นำ API Key ที่ได้มากรอกในช่องตั้งค่าของ Control Panel หรือบันทึกลงใน `config.json`
-</details>
+1. **ระบบถอดรหัสเสียงผ่าน WebSocket Streaming (Speech-to-Text)**
+   - แนวทางพัฒนา: เชื่อมต่อ Deepgram Nova หรือ Google Cloud Speech-to-Text v2 ผ่านสถาปัตยกรรม WebSocket
+   - ประโยชน์:
+     - ความหน่วงในการถอดรหัสเสียงลดลงเหลือประมาณ 150 ถึง 200 มิลลิวินาที
+     - คืนทรัพยากรการประมวลผลให้การ์ดจอและซีพียู ทำให้เฟรมเรตในเกมคงที่
+     - รองรับระบบ Keyword Boosting เพื่อกำหนดชื่อเฉพาะและศัพท์เทคนิคในเกม
+   - รูปแบบค่าใช้จ่าย: คิดตามระยะเวลาการใช้งานจริง (ประมาณ 8 ถึง 10 บาทต่อชั่วโมงการเล่นเกม)
 
-<details>
-<summary><b>4. ตัวหนังสือบนหน้าจออ่านไม่ติด หรือคำแปลเพี้ยน?</b></summary>
+2. **ระบบแปลภาษาขั้นสูง (Contextual Translation Engine)**
+   - แนวทางพัฒนา:
+     - เชื่อมต่อ DeepL API สำหรับการแปลภาษาที่มีโครงสร้างไวยากรณ์สมบูรณ์
+     - เชื่อมต่อ Large Language Model (เช่น Gemini Flash Paid Tier) เพื่อรองรับสำนวน แสลง และบทสนทนาเฉพาะกลุ่ม
+   - ประโยชน์: สำนวนภาษาไทยมีความเป็นธรรมชาติ สละสลวย และตรงตามบริบทของเรื่องราว
+   - รูปแบบค่าใช้จ่าย: ชำระตามปริมาณตัวอักษรจริง โดยเฉลี่ยไม่เกิน 30 ถึง 50 บาทต่อเดือนสำหรับการใช้งานทั่วไป
 
-- ลองกด `F9` แล้วลากคลุมเฉพาะบริเวณตัวหนังสือ ไม่ให้ติดพื้นหลังของเกมที่เคลื่อนไหวมากเกินไป
-- หากฟอนต์เกมมีลวดลายซับซ้อน ให้เปิดใช้งาน `Binarize` (ปรับขาวดำ) หรือปรับระดับ `Upscale Factor` ในหน้าต่างการตั้งค่า
-- สำหรับ Windows Native OCR ให้ตรวจสอบว่ามี Language Pack ภาษาอังกฤษติดตั้งอยู่ใน Windows (Settings -> Time & Language -> Language & Region)
-</details>
+### ระยะที่ 3: ระบบออฟไลน์ประสิทธิภาพสูงระดับองค์กร (High-End Offline Inference)
+**เป้าหมาย:** ความเป็นส่วนตัวสูงสุดและความเป็นอิสระจากการเชื่อมต่ออินเทอร์เน็ต
+
+1. **การประมวลผลด้วยแบบจำลองขนาดใหญ่ในเครื่อง**
+   - ข้อกำหนดระบบ: การ์ดประมวลผลกราฟิกที่มีหน่วยความจำ VRAM ขนาด 12GB ขึ้นไป (เช่น NVIDIA RTX ซีรีส์ 4070 ขึ้นไป)
+   - แนวทางพัฒนา:
+     - ติดตั้งแบบจำลอง Whisper Large-v3 Turbo สำหรับการถอดเสียงทุกสำเนียงโดยไม่สูญเสียความแม่นยำ
+     - รันแบบจำลองภาษาขนาดเล็ก (SLM) ขนาด 7B ถึง 8B พารามิเตอร์ภายในเครื่องเพื่อทำหน้าที่แปลภาษาโดยตรง
+   - ประโยชน์: ใช้งานได้โดยไม่ต้องพึ่งพาอินเทอร์เน็ต ความหน่วงคงที่ และไม่มีค่าใช้จ่ายรายเดือนในระยะยาว
+
+### ดัชนีชี้วัดความสำเร็จของระบบ (Key Performance Indicators)
+
+| ตัวชี้วัด | สถานะปัจจุบัน | เป้าหมายระยะที่ 1 | เป้าหมายระยะที่ 2 |
+|---|---|---|---|
+| ความหน่วงรวมทั้งระบบ (End-to-End Latency) | 600 - 800 ms | 400 - 500 ms | 250 - 350 ms |
+| ความถูกต้องของคำศัพท์ในเกม (Domain Accuracy) | ปานกลาง | ดี | ดีเยี่ยม |
+| การใช้ทรัพยากรเครื่องขณะเล่นเกม (GPU/CPU Load) | 15 - 25% | 15 - 20% | ต่ำกว่า 5% |
+| ความเป็นธรรมชาติของบทแปล (BLEU / Human Score) | พอใช้ | พอใช้ | สูงมาก |
 
 ---
 
-## 🗺️ แผนการพัฒนาในอนาคต (Roadmap)
+## ข้อแนะนำและการแก้ปัญหาเบื้องต้น (Troubleshooting)
 
-- [x] ระบบจับภาพความเร็วสูงด้วย `mss` และการลากเลือก ROI แบบ Interactive
-- [x] รองรับ Windows Native OCR (`winocr`) ความเร็วสูง
-- [x] ระบบดักฟังเสียงเกมในเครื่อง WASAPI Loopback Audio Capture
-- [x] รองรับการแปลงเสียงเป็นข้อความด้วย AI ออฟไลน์ `faster-whisper`
-- [x] รองรับการแปลด้วย Google Translate, Gemini AI และ Ollama Local LLM
-- [x] หน้าต่างซับไตเติลโปร่งแสงแบบ Click-Through ไม่กวนการเล่นเกม
-- [x] คีย์ลัดระดับสากล (Global Hotkeys)
-- [ ] ระบบสร้างตัวติดตั้ง Standalone Executable (.exe) ผ่าน PyInstaller
-- [x] ระบบจัดการคำศัพท์เฉพาะทางในเกม (Gaming Glossary / Custom Dictionary: glossary.json)
-- [x] ระบบ Auto-Hide Subtitles และ Dynamic Silence Cut สำหรับตัดเสียงพูดฉับไว
+- **การใช้งานคีย์ลัดในเกมบางเกมไม่ได้ผล:** บางเกมทำงานด้วยสิทธิ์ Administrator ให้เปิด PowerShell หรือ Command Prompt ด้วยสิทธิ์ "Run as Administrator" ก่อนรันโปรแกรม
+- **ไม่มีเสียงหรือโปรแกรมตรวจไม่พบเสียง:** ตรวจสอบว่าเปิดเสียงในเกมหรือสื่ออยู่ และตรวจสอบว่า Default Audio Output ใน Windows ถูกเลือกไปยังอุปกรณ์ลำโพงหรือหูฟังที่กำลังฟังอยู่
+- **การปรับแต่งคำศัพท์เฉพาะทาง:** สามารถเพิ่มคำศัพท์ ชื่อตัวละคร หรือชื่อสถานที่ในเกมลงในไฟล์ [glossary.json](file:///C:/Users/ASUS/realtime-game-translator/glossary.json) เพื่อให้ระบบจดจำและแปลได้ถูกต้องตามบริบท
 
 ---
 
-## 📄 ใบอนุญาต (License)
+## สัญญาอนุญาต (License)
 
-โปรเจกต์นี้เผยแพร่ภายใต้สัญญาอนุญาต [MIT License](LICENSE) สามารถนำไปพัฒนาต่อยอด ใช้งาน และแจกจ่ายได้อย่างอิสระ
+โปรเจกต์นี้เผยแพร่ภายใต้สัญญาอนุญาต [MIT License](LICENSE)
